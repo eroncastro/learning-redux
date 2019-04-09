@@ -65,11 +65,20 @@ function createStore(initialState, reducer) {
  * - The action represents an event that will change the state of our store.
  */
 function reducer(state = [], action) {
-  if (action.type === 'ADD_TODO') {
-    return state.concat([action.todo]);
+  switch (action.type) {
+    case 'ADD_TODO':
+      return state.concat([action.todo]);
+    case 'REMOVE_TODO':
+      return state.filter(todo => todo.id !== action.id);
+    case 'TOGGLE_TODO':
+      return state.map(todo => {
+        return todo.id === action.id
+          ? { ...action, complete: !todo.complete }
+          : todo;
+      });
+    default:
+      return state;
   }
-
-  return state;
 }
 
 const store = createStore([], reducer);
