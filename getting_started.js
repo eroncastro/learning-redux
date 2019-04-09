@@ -27,7 +27,7 @@
   *
   * Rules for updating the state:
   * 1. Only an event change the state of our store.
-  * 2. The functions that returns the new state needs to be a pure function.
+  * 2. The function that returns the new state needs to be a pure function. This function is called a reducer.
   */
 function createStore(initialState, reducer) {
   let state = initialState;
@@ -58,7 +58,7 @@ function createStore(initialState, reducer) {
 /**
  * This reducer function is a pure function, which means:
  * 1. It returns the same result if the same arguments are passed in;
- * 2. It depends solely on the arguments passe to it;
+ * 2. It depends solely on the arguments passed to it;
  * 3. It does not produce side effects, such as API requests or I/O operations.
  *
  * It receives the state and an action and reduces them to a brand new state.
