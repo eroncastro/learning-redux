@@ -64,7 +64,7 @@ function createStore(initialState, reducer) {
  * It receives the state and an action and reduces them to a brand new state.
  * - The action represents an event that will change the state of our store.
  */
-function reducer(state, action) {
+function reducer(state = [], action) {
   if (action.type === 'ADD_TODO') {
     return state.concat([action.todo]);
   }
@@ -72,13 +72,17 @@ function reducer(state, action) {
   return state;
 }
 
-const store = createStore({}, reducer);
+const store = createStore([], reducer);
 
 store.subscribe(() => {
   console.log('The new state is: ', store.getState());
 });
 
-store.subscribe(() => {
-  console.log('The store has changed.');
+store.dispatch({
+  type: 'ADD_TODO',
+  todo: {
+    id: 0,
+    name: 'Learn Redux',
+    complete: false
+  }
 });
-
