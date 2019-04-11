@@ -103,7 +103,7 @@ function todos(state = [], action) {
     case TOGGLE_TODO:
       return state.map(todo => {
         return todo.id === action.id
-          ? { ...action, complete: !todo.complete }
+          ? { ...todo, complete: !todo.complete }
           : todo;
       });
     default:
