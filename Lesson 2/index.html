@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Udacity Todo Goals</title>
+</head>
+<body>
+  <div>
+    <h1>Todo list</h1>
+    <input id="todo" type="text" placeholder="Add todo">
+    <button id="todo-btn">Add todo</button>
+    <ul id="todos"></ul>
+  </div>
+
+  <div>
+    <h1>Goals list</h1>
+    <input id="goal" type="text" placeholder="Add goal">
+    <button id="goal-btn">Add goal</button>
+    <ul id="goals"></ul>
+  </div>
+
+  <script src="store.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    const store = createStore({}, app);
+
+    function generateId() {
+      return Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36);
+    }
+
+    function addTodo() {
+      const input = document.getElementById('todo');
+      const name = input.value;
+      input.value = '';
+
+      store.dispatch(addTodoAction({
+        name,
+        complete: false,
+        id: generateId()
+      }));
+    }
+
+    function addGoal() {
+      const input = document.getElementById('goal');
+      const name = input.value;
+      input.value = '';
+
+      store.dispatch(addGoalAction({
+        name,
+        id: generateId()
+      }));
+    }
+
+    document.getElementById('todo-btn').addEventListener('click', addTodo);
+    document.getElementById('goal-btn').addEventListener('click', addGoal);
+
+    function addTodoToDOM(todo) {
+      const node = document.createElement('li');
+
+      node.innerText = todo.name;
+      document.getElementById('todos').appendChild(node);
+    }
+
+    function addGoalToDOM(goal) {
+      const node = document.createElement('li');
+
+      node.innerText = goal.name;
+      document.getElementById('goals').appendChild(node);
+    }
+
+    store.subscribe(() => {
+      const { todos, goals } = store.getState();
+
+      document.getElementById('todos').innerHTML = '';
+      document.getElementById('goals').innerHTML = '';
+
+      todos.forEach(addTodoToDOM);
+      goals.forEach(addGoalToDOM);
+    });
+  </script>
+</body>
+</html>
