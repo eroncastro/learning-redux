@@ -38,10 +38,6 @@
       }));
     }
 
-    function toggleTodo(id) {
-      store.dispatch(toggleTodoAction(id));
-    }
-
     function addGoal() {
       const input = document.getElementById('goal');
       const name = input.value;
@@ -54,17 +50,19 @@
     }
 
     document.getElementById('todo-btn').addEventListener('click', addTodo);
-    document.getElementById('todos').addEventListener('click', event => {
-      toggleTodo(event.target.id);
-    });
+    document.getElementById('todos')
     document.getElementById('goal-btn').addEventListener('click', addGoal);
 
     function addTodoToDOM(todo) {
       const node = document.createElement('li');
 
-      node.setAttribute('id', todo.id);
       node.innerText = todo.name;
       node.style.textDecoration = todo.complete ? 'line-through' : 'none';
+
+      node.addEventListener('click', () => {
+        store.dispatch(toggleTodoAction(todo.id));
+      });
+
       document.getElementById('todos').appendChild(node);
     }
 
