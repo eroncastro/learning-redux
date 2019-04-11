@@ -38,6 +38,10 @@
       }));
     }
 
+    function toggleTodo(id) {
+      store.dispatch(toggleTodoAction(id));
+    }
+
     function addGoal() {
       const input = document.getElementById('goal');
       const name = input.value;
@@ -50,18 +54,24 @@
     }
 
     document.getElementById('todo-btn').addEventListener('click', addTodo);
+    document.getElementById('todos').addEventListener('click', event => {
+      toggleTodo(event.target.id);
+    });
     document.getElementById('goal-btn').addEventListener('click', addGoal);
 
     function addTodoToDOM(todo) {
       const node = document.createElement('li');
 
+      node.setAttribute('id', todo.id);
       node.innerText = todo.name;
+      node.style.textDecoration = todo.complete ? 'line-through' : '';
       document.getElementById('todos').appendChild(node);
     }
 
     function addGoalToDOM(goal) {
       const node = document.createElement('li');
 
+      node.setAttribute('id', goal.id);
       node.innerText = goal.name;
       document.getElementById('goals').appendChild(node);
     }
