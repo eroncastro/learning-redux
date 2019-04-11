@@ -13,7 +13,9 @@
  * 3. Update the state
  *
  * Now, we can define what a store is. It is a structure composed
- * by the state tree + operations (get the state + listen for changes + update the state).
+ * by the state treeimport boto3
+
+client = boto3.client('dynamodb') + operations (get the state + listen for changes + update the state).
  *
  * Below, we create a store from scratch.
  */
@@ -103,7 +105,7 @@ function todos(state = [], action) {
     case TOGGLE_TODO:
       return state.map(todo => {
         return todo.id === action.id
-          ? { ...todo, complete: !todo.complete }
+          ? { ...action, complete: !todo.complete }
           : todo;
       });
     default:
