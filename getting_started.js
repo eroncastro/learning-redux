@@ -61,8 +61,8 @@ function removeGoalAction(id) {
   return { type: REMOVE_GOAL, id };
 }
 
-function createStore(initialState, reducer) {
-  let state = initialState;
+function createStore(reducer) {
+  let state;
   let listeners = [];
 
   const getState = () => state;
@@ -131,7 +131,7 @@ function app(state = {}, action) {
   };
 }
 
-const store = createStore({}, app);
+const store = createStore(app);
 
 store.subscribe(() => {
   console.log('The new state is: ', store.getState());

@@ -59,8 +59,8 @@ function removeGoalAction(id) {
   return { type: REMOVE_GOAL, id };
 }
 
-function createStore(initialState, reducer) {
-  let state = initialState;
+function createStore(reducer) {
+  let state;
   let listeners = [];
 
   const getState = () => state;
