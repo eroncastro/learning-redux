@@ -19,8 +19,9 @@
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.7.2/redux.min.js"></script>
+  <script src="store.js"></script>
   <script type="text/javascript">
-    const store = createStore({}, app);
+    const store = Redux.createStore(Redux.combineReducers({ todos, goals }));
 
     function generateId() {
       return Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36);
