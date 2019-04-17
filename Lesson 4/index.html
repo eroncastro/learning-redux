@@ -147,15 +147,13 @@
       constructor(props) {
         super(props);
 
-        this.input = React.createRef();
         this.addItem = this.addItem.bind(this);
       }
 
       addItem(event) {
         event.preventDefault();
-        debugger
-        const name = event.target.value;
-        event.target.value = '';
+        const name = this.textInput.value;
+        this.textInput.value = '';
 
         this.props.store.dispatch(addTodoAction({
           name, complete: false, id: generateId()
@@ -169,7 +167,7 @@
             <input
               type="text"
               placeholder="Add Todo"
-              ref={this.input}
+              ref={input => this.textInput = input}
             />
             <button onClick={this.addItem}>Add Todo</button>
             <List />
@@ -182,15 +180,13 @@
       constructor(props) {
         super(props);
 
-        this.input = React.createRef();
         this.addItem = this.addItem.bind(this);
       }
 
       addItem(event) {
         event.preventDefault();
-        debugger;
-        const name = event.target.value;
-        event.target.value = '';
+        const name = this.textInput.value;
+        this.textInput.value = '';
 
         this.props.store.dispatch(addGoalAction({
           name, id: generateId()
@@ -204,7 +200,7 @@
             <input
               type="text"
               placeholder="Add goal"
-              ref={this.input}
+              ref={input => this.textInput = input}
             />
             <button onClick={this.addItem}>Add Goal</button>
             <List />
