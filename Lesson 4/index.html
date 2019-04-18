@@ -86,7 +86,7 @@
     function createRemoveButton(onClick) {
       const removeBtn = document.createElement('button');
 
-      removeBtn.innerText = 'x';
+      removeBtn.innerText = 'X';
       removeBtn.addEventListener('click', onClick);
 
       return removeBtn;
@@ -138,7 +138,16 @@
     function List(props) {
       return (
         <ul>
-          <li>List</li>
+          {props.items.map(item => {
+            return (
+              <li key={item.id}>
+                <span>
+                  {item.name}
+                </span>
+                <button onClick={e => props.removeItem(item)}>X</button>
+              </li>
+            );
+          })}
         </ul>
       );
     }
@@ -149,16 +158,21 @@
 
         this.textInput = React.createRef();
         this.addItem = this.addItem.bind(this);
+        this.removeItem = this.removeItem.bind(this);
       }
 
       addItem(event) {
         event.preventDefault();
-        const name = this.textInput.value;
-        this.textInput.value = '';
+        const name = this.textInput.current.value;
+        this.textInput.current.value = '';
 
         this.props.store.dispatch(addTodoAction({
           name, complete: false, id: generateId()
         }))
+      }
+
+      removeItem(todo) {
+        this.props.store.dispatch(removeTodoAction(todo.id));
       }
 
       render() {
@@ -171,7 +185,11 @@
               ref={this.textInput}
             />
             <button onClick={this.addItem}>Add Todo</button>
-            <List />
+
+            <List
+              items={this.props.todos}
+              removeItem={this.removeItem}
+            />
           </div>
         );
       }
@@ -182,6 +200,7 @@
         super(props);
 
         this.addItem = this.addItem.bind(this);
+        this.removeItem = this.removeItem.bind(this);
       }
 
       addItem(event) {
@@ -194,6 +213,10 @@
         }));
       }
 
+      removeItem(goal) {
+        this.props.store.dispatch(removeGoalAction(goal.id));
+      }
+
       render() {
         return (
           <div>
@@ -204,18 +227,28 @@
               ref={input => this.textInput = input}
             />
             <button onClick={this.addItem}>Add Goal</button>
-            <List />
+
+            <List
+              items={this.props.goals}
+              removeItem={this.removeItem}
+            />
           </div>
         );
       }
     }
 
     class App extends React.Component {
+      componentDidMount() {
+        this.props.store.subscribe(() => this.forceUpdate());
+      }
+
       render() {
+        const { todos, goals } = this.props.store.getState();
+
         return (
           <div>
-            <Todos store={this.props.store} />
-            <Goals store={this.props.store} />
+            <Todos todos={todos} store={this.props.store} />
+            <Goals goals={goals} store={this.props.store} />
           </div>
         );
       }
