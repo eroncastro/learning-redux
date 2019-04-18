@@ -136,12 +136,20 @@
 
   <script type="text/babel">
     function List(props) {
+      const toggleItem = item => {
+        if (!props.toggleItem && !(typeof props.toggleItem === 'function')) return;
+
+        props.toggleItem(item);
+      };
+
       return (
         <ul>
           {props.items.map(item => {
             return (
               <li key={item.id}>
-                <span>
+                <span
+                  onClick={() => toggleItem(item)}
+                  style={{ textDecoration: item.complete ? 'line-through' : 'none'}}>
                   {item.name}
                 </span>
                 <button onClick={e => props.removeItem(item)}>X</button>
@@ -159,6 +167,7 @@
         this.textInput = React.createRef();
         this.addItem = this.addItem.bind(this);
         this.removeItem = this.removeItem.bind(this);
+        this.toggleItem = this.toggleItem.bind(this);
       }
 
       addItem(event) {
@@ -175,6 +184,10 @@
         this.props.store.dispatch(removeTodoAction(todo.id));
       }
 
+      toggleItem(todo) {
+        this.props.store.dispatch(toggleTodoAction(todo.id));
+      }
+
       render() {
         return (
           <div>
@@ -189,6 +202,7 @@
             <List
               items={this.props.todos}
               removeItem={this.removeItem}
+              toggleItem={this.toggleItem}
             />
           </div>
         );
