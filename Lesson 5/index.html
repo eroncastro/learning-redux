@@ -89,11 +89,26 @@
       }
 
       removeItem(todo) {
+        // Optimistic removal
         this.props.store.dispatch(removeTodoAction(todo.id));
+
+        return API
+          .deleteTodo(todo.id)
+          .catch(() => {
+            this.props.store.dispatch(addTodoAction(todo));
+            alert('An error occurred. Please, try again.');
+          });
       }
 
       toggleItem(todo) {
         this.props.store.dispatch(toggleTodoAction(todo.id));
+
+        return API
+          .saveTodoToggle(todo.id)
+          .catch(() => {
+            this.props.store.dispatch(toggleTodoAction(todo.id));
+            alert('An error occurred. Please, try again');
+          });
       }
 
       render() {
@@ -137,6 +152,13 @@
 
       removeItem(goal) {
         this.props.store.dispatch(removeGoalAction(goal.id));
+
+        return API
+          .deleteGoal(goal.id)
+          .catch(() => {
+            this.props.store.dispatch(addGoalAction(goal));
+            alert('An error occurred. Please, try again.');
+          });
       }
 
       render() {
