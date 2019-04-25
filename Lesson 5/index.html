@@ -15,7 +15,7 @@
   <script src="store.js"></script>
   <script type="text/javascript">
     const checker = store => next => action => {
-      if ((action.type === ADD_TODO || action.type === ADD_TODO) &&
+      if ((action.type === ADD_TODO || action.type === ADD_GOAL) &&
             action.todo.name.includes('bitcoin')) {
         return alert('Nope! That is a bad idea!')
       }
@@ -81,11 +81,16 @@
       addItem(event) {
         event.preventDefault();
         const name = this.textInput.current.value;
-        this.textInput.current.value = '';
 
-        this.props.store.dispatch(addTodoAction({
-          name, complete: false, id: generateId()
-        }))
+        return API
+          .saveTodo(name)
+          .then(todo => {
+            this.props.store.dispatch(addTodoAction(todo));
+            this.textInput.value = '';
+          })
+          .catch(() => {
+            alert('An error occurred. Please, try again.');
+          });
       }
 
       removeItem(todo) {
@@ -143,11 +148,16 @@
       addItem(event) {
         event.preventDefault();
         const name = this.textInput.value;
-        this.textInput.value = '';
 
-        this.props.store.dispatch(addGoalAction({
-          name, id: generateId()
-        }));
+        return API
+          .saveGoal(name)
+          .then(goal => {
+            this.props.store.dispatch(addGoalAction(goal));
+            this.textInput.value = '';
+          })
+          .catch(() => {
+            alert('An error occurred. Please, try again.');
+          });
       }
 
       removeItem(goal) {
