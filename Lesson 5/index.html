@@ -44,13 +44,13 @@
   </script>
 
   <script type="text/babel">
-    function handleAddTodo(input) {
+    function handleAddTodo(name, callback) {
       return dispatch => {
         return API
-          .saveTodo(input.value)
+          .saveTodo(name)
           .then(todo => {
             dispatch(addTodoAction(todo));
-            input.value = '';
+            callback();
           })
           .catch(() => {
             alert('An error occurred. Please, try again.');
@@ -84,13 +84,13 @@
       };
     }
 
-    function handleAddGoal(input) {
+    function handleAddGoal(name, callback) {
       return dispatch => {
         return API
-          .saveGoal(input.value)
+          .saveGoal(name)
           .then(goal => {
             dispatch(addGoalAction(goal));
-            input.value = '';
+            callback();
           })
           .catch(() => {
             alert('An error occurred. Please, try again.');
@@ -148,7 +148,12 @@
 
       addItem(event) {
         event.preventDefault();
-        this.props.store.dispatch(handleAddTodo(this.textInput.current));
+        this.props.store.dispatch(
+          handleAddTodo(
+            this.textInput.current.value,
+            () => this.textInput.current.value = ''
+          )
+        );
       }
 
       removeItem(todo) {
@@ -190,18 +195,13 @@
 
       addItem(event) {
         event.preventDefault();
-        this.props.store.dispatch(handleAddGoal(this.textInput));
+        this.props.store.dispatch(
+          handleAddGoal(this.textInput.value, () => this.textInput.value = '')
+        );
       }
 
       removeItem(goal) {
-        this.props.store.dispatch(removeGoalAction(goal.id));
-
-        return API
-          .deleteGoal(goal.id)
-          .catch(() => {
-            this.props.store.dispatch(addGoalAction(goal));
-            alert('An error occurred. Please, try again.');
-          });
+        this.props.store.dispatch(handleRemoveGoal(goal));
       }
 
       render() {
