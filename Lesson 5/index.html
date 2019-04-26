@@ -44,6 +44,19 @@
   </script>
 
   <script type="text/babel">
+    function handleInitialData() {
+      return dispatch => {
+        return Promise
+          .all([
+            API.fetchTodos(),
+            API.fetchGoals()
+          ])
+          .then(([todos, goals]) => {
+            dispatch(receiveDataAction(todos, goals));
+          });
+      }
+    }
+
     function handleAddTodo(name, callback) {
       return dispatch => {
         return API
@@ -227,15 +240,7 @@
     class App extends React.Component {
       componentDidMount() {
         this.props.store.subscribe(() => this.forceUpdate());
-
-        Promise
-          .all([
-            API.fetchTodos(),
-            API.fetchGoals()
-          ])
-          .then(([todos, goals]) => {
-            store.dispatch(receiveDataAction(todos, goals));
-          });
+        this.props.store.dispatch(handleInitialData());
       }
 
       render() {
