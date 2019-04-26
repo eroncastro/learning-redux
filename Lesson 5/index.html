@@ -32,9 +32,15 @@
       return result;
     };
 
+    const thunk = store => next => action => {
+      return typeof action === 'function'
+        ? action(store.dispatch)
+        : next(action);
+    };
+
     const store = Redux.createStore(
       Redux.combineReducers({ todos, goals, loading }),
-      Redux.applyMiddleware(checker, logger)
+      Redux.applyMiddleware(thunk, checker, logger)
     );
 
     function generateId() {
@@ -43,6 +49,20 @@
   </script>
 
   <script type="text/babel">
+    function handleRemoveTodo(todo) {
+
+      return dispatch => {
+        dispatch(removeTodoAction(todo.id));
+
+        return API
+          .deleteTodo(todo.id)
+          .catch(() => {
+            dispatch(addTodoAction(todo));
+            alert('An error occurred. Please, try again.');
+          });
+      };
+    }
+
     function List(props) {
       const toggleItem = item => {
         if (!props.toggleItem && !(typeof props.toggleItem === 'function')) return;
@@ -93,15 +113,7 @@
       }
 
       removeItem(todo) {
-        // Optimistic removal
-        this.props.store.dispatch(removeTodoAction(todo.id));
-
-        return API
-          .deleteTodo(todo.id)
-          .catch(() => {
-            this.props.store.dispatch(addTodoAction(todo));
-            alert('An error occurred. Please, try again.');
-          });
+        this.props.store.dispatch(handleRemoveTodo(todo));
       }
 
       toggleItem(todo) {
