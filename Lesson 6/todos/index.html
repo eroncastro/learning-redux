@@ -198,19 +198,9 @@
       }
     }
 
-    class ConnectedTodos extends React.Component {
-      render() {
-        return (
-          <Context.Consumer>
-            {store => {
-              const { todos } = store.getState();
-
-              return <Todos todos={todos} dispatch={store.dispatch} />
-            }}
-          </Context.Consumer>
-        );
-      }
-    }
+    const ConnectedTodos = connect((state) => {
+      return { todos: state.todos };
+    })(Todos);
 
     class Goals extends React.Component {
       constructor(props) {
@@ -251,36 +241,29 @@
       }
     }
 
-    class ConnectGoals extends React.Component {
-      render() {
-        return (
-          <Context.Consumer>
-            {store => {
-              const { goals } = store.getState();
-
-              return <Goals goals={goals} dispatch={store.dispatch} />;
-            }}
-          </Context.Consumer>
-        );
-      }
-    }
+    const ConnectGoals = connect((state) => {
+      return { goals: state.goals };
+    })(Goals);
 
     /**
-     * Presentational Component
+     * Components Patterns
+     * 1) Presentational Component
      *
-     * It is responsible for rendering content.
-     * It is concerned with how things look.
-    */
+     * - It is responsible for rendering content.
+     * - It is concerned with how things look.
+     *
+     * 2) Connected or Container Component
+     *
+     * - It is responsible for interacting with the store.
+     * - It is concerned with how things work.
+     * */
     class App extends React.Component {
       componentDidMount() {
-        this.props.store.subscribe(() => this.forceUpdate());
-        this.props.store.dispatch(handleInitialData());
+        this.props.dispatch(handleInitialData());
       }
 
       render() {
-        const { loading } = this.props.store.getState();
-
-        if (loading) {
+        if (this.props.loading) {
           return <h3>Loading...</h3>;
         }
 
@@ -293,20 +276,46 @@
       }
     }
 
-    /**
-     * Connected or Container Component
-     *
-     * It is responsible for interacting with the store.
-     * It is concerned with how things work.
-     * */
-    class ConnectedApp extends React.Component {
-      render() {
-        return (
-          <Context.Consumer>
-            {store => <App store={store} />}
-          </Context.Consumer>
-        );
-      }
+    const ConnectedApp = connect((state) => {
+      return { loading: state.loading };
+    })(App);
+
+    function connect(mapStateToProps) {
+      return Component => {
+        class Receiver extends React.Component {
+          componentDidMount() {
+            const { subscribe } = this.props.store;
+
+            this.unsubscribe = subscribe(() => {
+              this.forceUpdate();
+            });
+          }
+
+          componentWillUmount() {
+            this.unsubscribe();
+          }
+
+          render() {
+            const { dispatch, getState } = this.props.store;
+            const state = getState();
+            const stateNeeded = mapStateToProps(state);
+
+            return <Component {...stateNeeded} dispatch={dispatch} />;
+          }
+        }
+
+        class ConnectedComponent extends React.Component {
+          render() {
+            return (
+              <Context.Consumer>
+                {store => <Receiver store={store} />}
+              </Context.Consumer>
+            );
+          }
+        }
+
+        return ConnectedComponent;
+      };
     }
 
     const Context = React.createContext();
