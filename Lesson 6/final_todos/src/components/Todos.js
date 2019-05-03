@@ -57,8 +57,6 @@ class Todos extends React.Component {
   }
 }
 
-const ConnectedTodos = connect((state) => {
+export default connect((state) => {
   return { todos: state.todos };
 })(Todos);
-
-export default ConnectedTodos;

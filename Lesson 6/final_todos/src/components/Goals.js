@@ -46,8 +46,6 @@ class Goals extends React.Component {
   }
 }
 
-const ConnectedGoals = connect((state) => {
+export default connect((state) => {
   return { goals: state.goals };
 })(Goals);
-
-export default ConnectedGoals;

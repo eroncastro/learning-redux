@@ -24,8 +24,6 @@ class App extends React.Component {
   }
 }
 
-const ConnectedApp = connect((state) => {
+export default connect((state) => {
   return { loading: state.loading };
 })(App);
-
-export default ConnectedApp;
